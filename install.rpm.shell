@@ -1,0 +1,20 @@
+#!/bin/bash
+/var/run/yum.pid
+chmod -R 777 /tmp
+tar -xvf mysql-8.0.25-1.el7.x86_64.rpm-bundle.tar
+rpm -ivh mysql-community-common-8.0.25-1.el7.x86_64.rpm
+rpm -ivh mysql-community-client-plugins-8.0.25-1.el7.x86_64.rpm
+yum remove mysql-libs
+rpm -ivh mysql-community-libs-8.0.25-1.el7.x86_64.rpm
+rpm -ivh mysql-community-client-8.0.25-1.el7.x86_64.rpm
+rpm -ivh mysql-community-server-8.0.25-1.el7.x86_64.rpm
+mysql --version
+rpm -qa|grep -i mysql
+mysqld --initialize --user=mysql
+systemctl start mysqld.service
+systemctl status mysqld.service
+ps -ef | grep -i mysql
+systemctl list-unit-files | grep mysqld.service
+systemctl disable mysqld.service
+cat /var/log/mysqld.log
+mysql -hlocalhosr -P3306 -u root -p

@@ -1,0 +1,35 @@
+#!/bin/bash
+yum install -y gcc-c++ 
+yum install -y pcre pcre-devel
+yum install -y zlib zlib-devel
+yum install -y openssl openssl-devel
+wget https://nginx.org/download/nginx-1.23.2.tar.gz
+tar -zxvf nginx-1.23.2.tar.gz
+mkdir /var/temp/nginx -p
+cd nginx-1.23.2
+./configure \
+    --prefix=/usr/local/nginx \
+    --pid-path=/var/run/nginx/nginx.pid \
+    --lock-path=/var/lock/nginx.lock \
+    --error-log-path=/var/log/nginx/error.log \
+    --http-log-path=/var/log/nginx/access.log \
+    --with-http_gzip_static_module \
+    --http-client-body-temp-path=/var/temp/nginx/client \
+    --http-proxy-temp-path=/var/temp/nginx/proxy \
+    --http-fastcgi-temp-path=/var/temp/nginx/fastcgi \
+    --http-uwsgi-temp-path=/var/temp/nginx/uwsgi \
+    --http-scgi-temp-path=/var/temp/nginx/scgi
+
+make && make install
+cd /usr/local/nginx/sbin/
+./nginx
+
+echo "安装成功"
+
+firewall-cmd --zone=public --add-port=80/tcp --permanent
+systemctl restart firewalld
+
+echo "防火墙重启成功，可以使用浏览器访问本机IP查看"
+
+
+
